@@ -64,6 +64,21 @@ def get_inputs():
 def fcfs(head, requests):
     # First Come First Served: same order as the queue
     return list(requests)
+
+def sstf(head, requests):
+    # Shortest Seek Time First: always go to the nearest request
+    remaining = list(requests)
+    current = head
+    order = []
+    while len(remaining) > 0:
+        closest = remaining[0]
+        for r in remaining:
+            if abs(r - current) < abs(closest - current):
+                closest = r
+        remaining.remove(closest)
+        order.append(closest)
+        current = closest
+    return order
     
 def scan(head, requests, low, high, direction):
     # Elevator: go one way to the disk END, then it will reverse
