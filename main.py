@@ -59,6 +59,12 @@ def get_inputs():
 
     return low, high, head, requests
 
+
+# ---------- ALGORITHMS (each returns the visiting order) ----------
+def fcfs(head, requests):
+    # First Come First Served: same order as the queue
+    return list(requests)
+    
 def scan(head, requests, low, high, direction):
     # Elevator: go one way to the disk END, then it will reverse
     smaller = sorted([r for r in requests if r < head])
@@ -75,6 +81,75 @@ def scan(head, requests, low, high, direction):
             order.append(low)        # It will go to the minimum boundary
             order += bigger          # Then it will go up from smallest
     return order
+
+
+# ---------- OUTPUT ----------
+EXPLAIN = {
+    "FCFS": "FCFS serves the requests in the same order they were entered.",
+    "SSTF": "SSTF always serves the request closest to the current head position.",
+    "SCAN": "SCAN moves in one direction until the disk boundary, then reverses.",
+}
+
+
+def total_movement(head, order):
+    total = 0
+    current = head
+    for cylinder in order:
+        total += abs(cylinder - current)
+        current = cylinder
+    return total
+
+
+def show_result(name, head, requests, order):
+    print("\nDISK SCHEDULING -", name)
+    print(EXPLAIN[name])
+    print("\nInitial Head  :", head)
+    print("Request Queue :", *requests)
+
+    print("\nService Sequence (the order the cylinders are visited):")
+    print(head, end="")
+    for cylinder in order:
+        print(" ->", cylinder, end="")
+    print("\n")
+
+    print("Movement = |To - From| (the distance the head travels in each step)")
+    print(f"{'Step':<6}{'From':<7}{'To':<6}Movement")
+    current = head
+    total = 0
+    step = 1
+    for cylinder in order:
+        move = abs(cylinder - current)
+        total += move
+        note = "" if cylinder in requests else "  (disk boundary)"
+        print(f"{step:<6}{current:<7}{cylinder:<6}{move:<4} = |{cylinder} - {current}|{note}")
+        current = cylinder
+        step += 1
+
+    print("\nTotal Head Movement:", total, "cylinders")
+    return total
+
+
+def compare(head, requests, low, high, direction):
+    results = {
+        "FCFS": fcfs(head, requests),
+        "SSTF": sstf(head, requests),
+        "SCAN": scan(head, requests, low, high, direction),
+    }
+
+    print("\nDISK SCHEDULING - COMPARISON")
+    print("The total head movement of each algorithm is compared.")
+    print("The algorithm with the LOWEST total is the most efficient.\n")
+    print("Algorithm   Total Head Movement")
+    best_name = ""
+    best_total = None
+    for name in results:
+        total = total_movement(head, results[name])
+        print(f"{name:<12}{total}")
+        if best_total is None or total < best_total:
+            best_total = total
+            best_name = name
+
+    print("\nBest (least movement):", best_name, "with", best_total, "cylinders")
 
 
 while True:
