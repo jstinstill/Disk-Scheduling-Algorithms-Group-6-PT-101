@@ -59,6 +59,15 @@ def get_inputs():
 
     return low, high, head, requests
 
+def get_direction():
+    print("\nPlease enter the initial SCAN direction as a word:")
+    print("  up   = the head moves toward the MAXIMUM cylinder first")
+    print("  down = the head moves toward the MINIMUM cylinder first")
+    direction = input("Initial SCAN Direction (up/down): ").strip().lower()
+    while direction != "up" and direction != "down":
+        print(f"  ERROR: '{direction}' is not valid. Only the words 'up' or 'down' are accepted.")
+        direction = input("Initial SCAN Direction (up/down): ").strip().lower()
+    return direction
 
 # ---------- ALGORITHMS (each returns the visiting order) ----------
 def fcfs(head, requests):
