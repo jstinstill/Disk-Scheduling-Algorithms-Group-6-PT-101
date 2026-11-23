@@ -203,9 +203,11 @@ def compare(head, requests, low, high, direction):
 
 
 while True:
-    print("\n========================================")
-    print("        DISK SCHEDULING SIMULATOR")
-    print("========================================\n")
+    print("=========================================================")
+    print("                DISK SCHEDULING SIMULATOR                ")
+    print("=========================================================")
+    print("Welcome to the simulation tool for operating system disk")
+    print("scheduling algorithms and head movement analysis!\n")
     print("1. FCFS")
     print("2. SSTF")
     print("3. SCAN (Elevator)")
