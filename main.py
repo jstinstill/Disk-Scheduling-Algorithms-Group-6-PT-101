@@ -153,27 +153,53 @@ def show_result(name, head, requests, order):
     return total
 
 
+
 def compare(head, requests, low, high, direction):
+
     results = {
         "FCFS": fcfs(head, requests),
         "SSTF": sstf(head, requests),
-        "SCAN": scan(head, requests, low, high, direction),
+        "SCAN": scan(head, requests, low, high, direction)
     }
 
-    print("\nDISK SCHEDULING - COMPARISON")
-    print("The total head movement of each algorithm is compared.")
-    print("The algorithm with the LOWEST total is the most efficient.\n")
-    print("Algorithm   Total Head Movement")
-    best_name = ""
-    best_total = None
-    for name in results:
-        total = total_movement(head, results[name])
-        print(f"{name:<12}{total}")
-        if best_total is None or total < best_total:
-            best_total = total
-            best_name = name
+    totals = {}
 
-    print("\nBest (least movement):", best_name, "with", best_total, "cylinders")
+    # Calculate total movement for each algorithm
+    for name, order in results.items():
+        totals[name] = total_movement(head, order)
+
+    # Find the algorithm with the least movement
+    best_name = min(totals, key=totals.get)
+    best_total = totals[best_name]
+
+    # Find the algorithm with the most movement
+    worst_name = max(totals, key=totals.get)
+    worst_total = totals[worst_name]
+
+    # Display comparison
+    print("\n========== ALGORITHM COMPARISON ==========")
+    print(f"{'Algorithm':<15}{'Total Movement':<18}{'Difference'}")
+    print("------------------------------------------")
+
+    for name, total in totals.items():
+
+        difference = total - best_total
+
+        if difference == 0:
+            status = "BEST"
+        else:
+            status = f"+{difference} cylinders"
+
+        print(f"{name:<15}{total:<18}{status}")
+
+    print("------------------------------------------")
+
+    print("\nBest Algorithm :", best_name)
+    print("Least Movement :", best_total, "cylinders")
+    print("Most Movement  :", worst_total, "cylinders")
+    print("Difference     :", worst_total - best_total, "cylinders")
+
+    print("==========================================")
 
 
 while True:
